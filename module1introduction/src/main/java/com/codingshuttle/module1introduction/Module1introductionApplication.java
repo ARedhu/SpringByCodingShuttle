@@ -3,6 +3,7 @@ package com.codingshuttle.module1introduction;
 import com.codingshuttle.module1introduction.impl.EmailService;
 import com.codingshuttle.module1introduction.impl.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,8 +12,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Module1introductionApplication implements CommandLineRunner {
 
 	// In Java the annotation are basically to tell the fellow programs the usecase of this method and using these are completely optional like @Override. But in case of String it is importatnt to use Annotations because they actually write execution logic behind the scenes and we can't remove them.
-	@Autowired
-	NotificationService notificationService;
+	// Way-1 of DI (it is not preferred)
+	//	@Autowired
+   //	NotificationService notificationService;
+
+	// Way-2: Constructor DI (preferred) because now we can  make it final.
+	final NotificationService notificationService;
+	Module1introductionApplication(@Qualifier("emailNotif") NotificationService notificationService){
+		this.notificationService = notificationService;
+	}
 	public static void main(String[] args) {
 		SpringApplication.run(Module1introductionApplication.class, args);
 //		SmsService smsService = new SmsService();
