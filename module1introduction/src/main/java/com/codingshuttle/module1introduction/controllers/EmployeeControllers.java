@@ -2,6 +2,7 @@ package com.codingshuttle.module1introduction.controllers;
 
 import com.codingshuttle.module1introduction.dto.EmployeeDTO;
 import com.codingshuttle.module1introduction.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,7 +65,7 @@ public class EmployeeControllers {
         return ResponseEntity.ok(employeeService.getAllEmployees());
     }
     @PostMapping(path="")
-    public ResponseEntity<EmployeeDTO> postEmployeeBy(@RequestBody EmployeeDTO employeeDTO){
+    public ResponseEntity<EmployeeDTO> postEmployeeBy(@Valid @RequestBody EmployeeDTO employeeDTO){
         EmployeeDTO savedEmployee = employeeService.postEmployee(employeeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
     }
