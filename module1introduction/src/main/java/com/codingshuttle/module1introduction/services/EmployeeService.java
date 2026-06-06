@@ -2,6 +2,7 @@ package com.codingshuttle.module1introduction.services;
 
 import com.codingshuttle.module1introduction.dto.EmployeeDTO;
 import com.codingshuttle.module1introduction.entities.EmployeeEntity;
+import com.codingshuttle.module1introduction.exceptions.ResourceNotFoundException;
 import com.codingshuttle.module1introduction.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.util.ReflectionUtils;
@@ -58,16 +59,22 @@ public class EmployeeService {
         return modelMapper.map(employeeRepository.save(employeeEntity), EmployeeDTO.class);
     }
 
+    public void doesEmployeeExistById(Long id){
+        boolean exist = employeeRepository.existsById(id);
+        if(!exist) throw new ResourceNotFoundException("Employee does not exist with id:"+id);
+    }
+
     // If id exists JPA performs updation, else JPA performs insertion. But remember in DTO the client has to send the whole object (he can't miss some fields except id).
     public EmployeeDTO putEmployee(Long employeeId, EmployeeDTO employeeDTO) {
+        doesEmployeeExistById(employeeId);
+
         EmployeeEntity employeeEntity = modelMapper.map(employeeDTO, EmployeeEntity.class);
         employeeEntity.setId(employeeId);
         return modelMapper.map(employeeRepository.save(employeeEntity), EmployeeDTO.class);
     }
 
     public boolean deleteEmployeeById(Long employeeId) {
-        boolean exists = employeeRepository.existsById(employeeId);
-        if(!exists) return false;
+        doesEmployeeExistById(employeeId);
         employeeRepository.deleteById(employeeId);
         return true;
     }
@@ -88,10 +95,12 @@ public class EmployeeService {
 
         // Way-2 of patch using optional
         public Optional<EmployeeDTO> patchEmployee(Long id, Map<String, Object> updates){
-            Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(id);
-            if(employeeOptional.isEmpty()) return Optional.empty();
+//            Optional<EmployeeEntity> employeeOptional = employeeRepository.findById(id);
+//            if(employeeOptional.isEmpty()) return Optional.empty();
 
-            EmployeeEntity employeeEntity = employeeOptional.get();
+            doesEmployeeExistById(id);
+
+            EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
             updates.forEach((key, value)->{
                 Field fieldToBeUpdated = ReflectionUtils.findField(EmployeeEntity.class, key);
                 fieldToBeUpdated.setAccessible(true);

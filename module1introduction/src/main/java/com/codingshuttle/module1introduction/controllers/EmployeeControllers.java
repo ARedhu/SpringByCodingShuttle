@@ -1,6 +1,7 @@
 package com.codingshuttle.module1introduction.controllers;
 
 import com.codingshuttle.module1introduction.dto.EmployeeDTO;
+import com.codingshuttle.module1introduction.exceptions.ResourceNotFoundException;
 import com.codingshuttle.module1introduction.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -35,7 +37,22 @@ public class EmployeeControllers {
 //         return employeeService.getEmployeeById(id);
 //     }
 
+
+    // ResponseEntity understanding.
     // *** It is preferred to return ResponseEntity rather than DTO because we can send various other things as well along with the response object like status codes.
+//    @GetMapping(path = "/{employeeId}")
+//    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable("employeeId") Long id){
+//        Optional<EmployeeDTO> employeeDTOOptional =  employeeService.getEmployeeById(id);
+//        // It is not necessary that map method can be used only on lists. Diff classes provide their own map() method.
+//        // map with optional means transforms the value if it is present.
+//        ResponseEntity<EmployeeDTO> responseEntity = employeeDTOOptional
+//                                            .map(employeeDTO -> ResponseEntity.ok(employeeDTO))
+//                                            .orElse(ResponseEntity.notFound().build());
+//        return responseEntity;
+//    }
+
+
+    // Exception handling understanding.
     @GetMapping(path = "/{employeeId}")
     public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable("employeeId") Long id){
         Optional<EmployeeDTO> employeeDTOOptional =  employeeService.getEmployeeById(id);
@@ -43,9 +60,23 @@ public class EmployeeControllers {
         // map with optional means transforms the value if it is present.
         ResponseEntity<EmployeeDTO> responseEntity = employeeDTOOptional
                                             .map(employeeDTO -> ResponseEntity.ok(employeeDTO))
-                                            .orElse(ResponseEntity.notFound().build());
+                                            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id="+id));
         return responseEntity;
     }
+
+    // Way-1. Local Exception Handling (@ExceptionHandler)
+    // Used inside a specific controller.
+//    @ExceptionHandler(NoSuchElementException.class)
+//    public String ElementNotFoundException(NoSuchElementException ex){
+//        return ex.getMessage();
+//    }
+
+    // Way-2. Global Exception Handling (@ControllerAdvice)
+    // Most commonly used in real projects.
+    // Instead of writing exception handling in every controller, we create a centralized handler. Create a package (advices) and inside of it we create classes for excpetion handling.
+
+
+
 
     // 2. @RequestParams
     // Use it when parameter is optional and used for sorting, filtering and other modifications to the request.
@@ -71,7 +102,7 @@ public class EmployeeControllers {
     }
 
     @PutMapping(path="/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long employeeId){
+    public ResponseEntity<EmployeeDTO> updateEmployee(@Valid @RequestBody EmployeeDTO employeeDTO, @PathVariable Long employeeId){
             EmployeeDTO updatedEmployee = employeeService.putEmployee(employeeId, employeeDTO);
             return ResponseEntity.ok(updatedEmployee);
     }
@@ -84,7 +115,7 @@ public class EmployeeControllers {
     }
 
     @PatchMapping(path = "/{employeeId}")
-    public ResponseEntity<EmployeeDTO> updateEmployeePartially(@PathVariable("employeeId") Long id, @RequestBody Map<String, Object> updates){
+    public ResponseEntity<EmployeeDTO> updateEmployeePartially(@Valid @PathVariable("employeeId") Long id, @RequestBody Map<String, Object> updates){
         Optional<EmployeeDTO> employeeDTO = employeeService.patchEmployee(id, updates);
         return employeeDTO
                 .map(ResponseEntity::ok)
