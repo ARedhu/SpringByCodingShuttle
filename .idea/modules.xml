@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/module1introduction.iml" filepath="$PROJECT_DIR$/.idea/module1introduction.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/SpringByCodingShuttle.iml" filepath="$PROJECT_DIR$/.idea/SpringByCodingShuttle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module1introduction/module1introduction.iml" filepath="$PROJECT_DIR$/module1introduction/module1introduction.iml" />
     </modules>
   </component>
 </project>
