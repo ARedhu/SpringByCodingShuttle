@@ -1,0 +1,53 @@
+<configuration>
+
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>logs/application.log</file>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                logs/application-%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>10MB</maxFileSize>
+<!--            Each file size will not exceed 10MB -->
+
+            <maxHistory>30</maxHistory>
+<!--            Will maintain older files of 30days only. -->
+
+            <totalSizeCap>2GB</totalSizeCap>
+<!--            Even if 30 days of logs exist, don't let the total archived log size exceed 2 GB. Older archives will be removed first if necessary. -->
+
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} %-5level %logger - %msg%n
+            </pattern>
+        </encoder>
+
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
+
+
+<!--
+Notes:
+Best practices:
+- Store logs in a dedicated logs/ directory rather than alongside your application JAR.
+- Use time + size based rolling (SizeAndTimeBasedRollingPolicy).
+- Compress archived logs with .gz.
+- Configure a sensible retention period (for example, 30 days), based on your organization's operational and compliance requirements.
+- Set a totalSizeCap to prevent logs from consuming all available disk space.
+- In cloud environments (Docker, Kubernetes), many teams write logs to stdout/stderr and let the platform or a log aggregation system (such as Elasticsearch/OpenSearch, Splunk, Datadog, or CloudWatch) handle storage and rotation. In those environments, file-based rolling may be unnecessary.
+
+
+
+-->

@@ -1,0 +1,32 @@
+2026-07-21 17:47:12 INFO  com.codingShuttle.Ashish.prod_ready_features.ProdReadyFeaturesApplicationTests - Starting ProdReadyFeaturesApplicationTests using Java 25.0.3 with PID 11481 (started by redhu in /home/redhu/SpringLearning/SpringByCodingShuttle/prod-ready-features)
+2026-07-21 17:47:12 INFO  com.codingShuttle.Ashish.prod_ready_features.ProdReadyFeaturesApplicationTests - No active profile set, falling back to 1 default profile: "default"
+2026-07-21 17:47:13 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-21 17:47:13 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 63 ms. Found 1 JPA repository interface.
+2026-07-21 17:47:13 INFO  org.hibernate.orm.jpa - HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-07-21 17:47:13 INFO  org.hibernate.orm.core - HHH000001: Hibernate ORM core version 7.4.1.Final
+2026-07-21 17:47:13 INFO  org.hibernate.envers.boot.internal.EnversServiceImpl - Envers integration enabled? : true
+2026-07-21 17:47:14 INFO  org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-21 17:47:14 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-07-21 17:47:14 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1fec9d33
+2026-07-21 17:47:14 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-07-21 17:47:14 INFO  org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/prod_ready_features?allowPublicKeyRetrieval=true&useSSL=false]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.46
+	Default catalog/schema: prod_ready_features/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-07-21 17:47:14 INFO  org.hibernate.envers.configuration.internal.metadata.AuditMetadataGenerator - Adding properties for entity: com.codingShuttle.Ashish.prod_ready_features.entities.PostEntity
+2026-07-21 17:47:15 INFO  org.hibernate.orm.core - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-21 17:47:15 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-21 17:47:15 INFO  org.springframework.data.jpa.repository.query.QueryEnhancerFactories - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-21 17:47:16 WARN  org.springframework.boot.jpa.autoconfigure.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-21 17:47:16 INFO  com.codingShuttle.Ashish.prod_ready_features.ProdReadyFeaturesApplicationTests - Started ProdReadyFeaturesApplicationTests in 4.467 seconds (process running for 6.105)
+2026-07-21 17:47:17 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-21 17:47:17 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-07-21 17:47:17 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
