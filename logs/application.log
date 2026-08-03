@@ -1032,3 +1032,8 @@ Unconditional classes:
 2026-07-21 20:36:36 INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
 2026-07-21 20:36:36 INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
 2026-07-21 20:36:36 INFO  org.springdoc.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 159 ms
+2026-07-21 20:44:54 INFO  org.springframework.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-07-21 20:44:54 INFO  org.springframework.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-07-21 20:44:54 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-21 20:44:54 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-07-21 20:44:54 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
