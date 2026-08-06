@@ -21,14 +21,24 @@ public class JwtService {
     private SecretKey getSecretKey(){
         return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
-    public String generateToken(User user){
+    public String generateAccessToken(User user){
         return Jwts.builder() // we are telling in advance that we are trying to build a token.
                 .subject(user.getId().toString()) // helps to uniquely identify a token for developers.
                 .claim("email", user.getEmail()) // these are simply (key, value) pairs parts of the payload.
                 .claim("roles", Set.of("ADMIN", "USER"))
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000*60)) // It is preferred to set the expiration time.
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*10)) // It is preferred to set the expiration time.
                 .signWith(getSecretKey()) // Remember we can't directly sign with our String type of Secret key. It requires the object of SecretKey.
+                .compact();
+
+    }
+
+    public String generateRefreshToken(User user){
+        return Jwts.builder() // we are telling in advance that we are trying to build a token.
+                .subject(user.getId().toString())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000L*60*60*24*30*6)) // 6-month expiration of refresh token.
+                .signWith(getSecretKey())
                 .compact();
 
     }
