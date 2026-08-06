@@ -2,15 +2,19 @@ package com.codingShuttle.Ashish.SpringSecurity.services;
 
 import com.codingShuttle.Ashish.SpringSecurity.dto.PostDTO;
 import com.codingShuttle.Ashish.SpringSecurity.entities.PostEntity;
+import com.codingShuttle.Ashish.SpringSecurity.entities.User;
 import com.codingShuttle.Ashish.SpringSecurity.exceptions.ResourceNotFoundException;
 import com.codingShuttle.Ashish.SpringSecurity.repositories.PostRepository;
 import com.codingShuttle.Ashish.SpringSecurity.services.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor // It itself write the constructor for all the required variables like final variable here.
 public class PostServiceImpl implements PostService {
@@ -34,6 +38,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO getPostById(Long postId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        log.info("user {}", user);
+
         PostEntity postEntity = postRepository
                 .findById(postId)
                 .orElseThrow(()-> new ResourceNotFoundException("Post not found with id="+postId));

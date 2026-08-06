@@ -2,10 +2,14 @@ package com.codingShuttle.Ashish.SpringSecurity.advice;
 
 import com.codingShuttle.Ashish.SpringSecurity.advice.ApiError;
 import com.codingShuttle.Ashish.SpringSecurity.exceptions.ResourceNotFoundException;
+import io.jsonwebtoken.JwtException;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.naming.AuthenticationException;
 
 // We can't change the name of "advice" folder but we can change the name of "GlobalExceptionHandler" folder but it is a preferred name by developers.
 //Just to clarify—you can absolutely change the name of the "advice" folder! It's just a folder package name. You can call it handlers, exceptions, errors, or anything you like. As long as the class has the @RestControllerAdvice annotation, Spring will find it anywhere in your component-scan range!
@@ -17,18 +21,27 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(exception.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
+
+
+//    ---------- Spring Security Exception Handling -----------
+    // Bydefault spring security gives us 403 error which means the user is authenticated but not authorized which is not correct for some cases.
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiError> handleAuthenticationException(AuthenticationException ex){
+        ApiError apiError = new ApiError(ex.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+   // Various other exceptions comes under AuthenticationException:
+    // i) AccountExpiredException, ii) BadCredentialsException, iii) CredentialsExpiredException, iv) AuthenticationCredentialsNotFoundException, v) SessionAuthenticationException.
+
+    // Various other exceptions comes under JwtException:
+    // i) ExpiredJwtException, ii) MalformedJwtException, iii) SignatureException, iv) UnsupportedJwtException, v) IllegalArgumentException.
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiError> handleJwtException(JwtException ex){
+        ApiError apiError = new ApiError(ex.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+    // But remember this JwtException will not work directly, just by writing the upper method.
+    // Reason:
+    // Because of various contexts. Like we have application-context for the whole application. One is dispatcherServletContext, this context is controllers and services. If any error occur with dispatcherServeletContext then that only will be handled by GlobalExceptionHandler. But our JwtError may occur inside of "filters/JwtAuthFilter" which will not be handled bydefault by GlobalExceptionHandler. Then, how we can pass our exception of "filters" package to this DispatcherServeletException context. For that we need "ExceptionResolver"
 }
 
-/*
-       Question: What is Response Entity?
-       Ans:
-        In Spring Boot, ResponseEntity is a special class that represents the entire HTTP response being sent back to the client (like Postman or a frontend app).
-
-        Think of it as a wrapper box. Inside standard methods, returning a plain object like PostDto or ApiError only fills the Body of the response, and Spring forces a default status code (200 OK).
-
-        By using ResponseEntity, you gain total programmatic control over all three parts of an HTTP response:
-        The Status Code: (e.g., 200 OK, 404 NOT_FOUND, 201 CREATED)
-        The Headers: (e.g., custom metadata, content types)
-        The Body: The actual data payload (ApiError, PostDto, etc.)
-
- */
