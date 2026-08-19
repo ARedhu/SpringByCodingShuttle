@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +30,7 @@ import static com.codingShuttle.Ashish.SpringSecurity.entities.enums.Role.CREATO
 @Configuration
 @EnableWebSecurity // This means we want to create/modify security filter chain.
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true) // This is used so that we can use @Secured and @PreAuthorize inside of our controllers.
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -46,9 +48,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(publicRoutes).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/posts/**").hasAnyRole(ADMIN.name(), CREATOR.name())
-                        .requestMatchers(HttpMethod.POST, "/posts/**").hasAuthority(POST_CREATE.name()) // Remeber if the upper condition satisfies it will never check this condition and will let the client to continue with the path/api.
+                        .requestMatchers("/posts/**").authenticated()
                         .anyRequest().authenticated())
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .sessionManagement(sessionConfig -> sessionConfig

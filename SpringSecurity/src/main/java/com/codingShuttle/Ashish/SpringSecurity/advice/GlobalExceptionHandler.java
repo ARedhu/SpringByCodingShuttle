@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.naming.AuthenticationException;
+import java.nio.file.AccessDeniedException;
 
 // We can't change the name of "advice" folder but we can change the name of "GlobalExceptionHandler" folder but it is a preferred name by developers.
 //Just to clarify—you can absolutely change the name of the "advice" folder! It's just a folder package name. You can call it handlers, exceptions, errors, or anything you like. As long as the class has the @RestControllerAdvice annotation, Spring will find it anywhere in your component-scan range!
@@ -43,5 +44,13 @@ public class GlobalExceptionHandler {
     // But remember this JwtException will not work directly, just by writing the upper method.
     // Reason:
     // Because of various contexts. Like we have application-context for the whole application. One is dispatcherServletContext, this context is controllers and services. If any error occur with dispatcherServeletContext then that only will be handled by GlobalExceptionHandler. But our JwtError may occur inside of "filters/JwtAuthFilter" which will not be handled bydefault by GlobalExceptionHandler. Then, how we can pass our exception of "filters" package to this DispatcherServeletException context. For that we need "ExceptionResolver"
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDeniedException(AccessDeniedException ex){
+        ApiError apiError = new ApiError(ex.getLocalizedMessage(), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+    }
+
+
 }
 

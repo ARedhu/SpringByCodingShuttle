@@ -25,4 +25,6 @@ public class PostEntity{
     @NotAudited      // This will not be tracked by hibernate envers.
     private String description;
 
+    @ManyToOne
+    private User author;
 }
