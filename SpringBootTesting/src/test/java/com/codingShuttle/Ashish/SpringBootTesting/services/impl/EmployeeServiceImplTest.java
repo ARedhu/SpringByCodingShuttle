@@ -3,6 +3,7 @@ package com.codingShuttle.Ashish.SpringBootTesting.services.impl;
 import com.codingShuttle.Ashish.SpringBootTesting.TestContainerConfiguration;
 import com.codingShuttle.Ashish.SpringBootTesting.dto.EmployeeDto;
 import com.codingShuttle.Ashish.SpringBootTesting.entities.Employee;
+import com.codingShuttle.Ashish.SpringBootTesting.exceptions.ResourceNotFoundException;
 import com.codingShuttle.Ashish.SpringBootTesting.repositories.EmployeeRepository;
 import com.codingShuttle.Ashish.SpringBootTesting.services.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 
 //@Import(TestContainerConfiguration.class) // Use this database.
@@ -74,6 +74,17 @@ class EmployeeServiceImplTest {
         verify(employeeRepository).findById(id); // 2.iii) Verify if the mocked thing methods were properly called or not.
     }
 
+    @Test
+    void testGetEmployeeById_WhenEmployeeIsNotPresent_ThenThrowException(){ // -ve case.
+        // Arrange
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // act and assert
+        assertThatThrownBy(()-> employeeService.getEmployeeById(1L))
+                .isInstanceOf(ResourceNotFoundException.class);
+
+    }
+
 
     @Test
     void testCreateNewEmmployee_WhenValidEmployee_ThenCreateNewEmployee(){ // Happy or +ve case. Means we are not dealing with failure or exceptions in this test case.
@@ -98,6 +109,22 @@ class EmployeeServiceImplTest {
 
         Employee capturedEmployee = employeeArgumentCaptor.getValue();
         assertThat(capturedEmployee.getEmail()).isEqualTo(employee.getEmail()); // Here we are verifying even more tightly that what we are passing from service layer is actually equal to what is passed to the repo for saving.
+    }
+
+
+    @Test
+    void testCreateNewEmployee_whenAttemptingToCreateEmployeeWithExistingEmail_thenThrowException(){
+        // Assert
+        String email = employee.getEmail();
+        when(employeeRepository.findByEmail(email)).thenReturn(List.of(employee));
+
+        // act and asssert
+        assertThatThrownBy(()-> employeeService.createNewEmployee(employeeDto))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Employee already exists with email: "+email);
+
+        verify(employeeRepository).findByEmail(employeeDto.getEmail());
+        verify(employeeRepository, never()).save(any());
     }
 
 
