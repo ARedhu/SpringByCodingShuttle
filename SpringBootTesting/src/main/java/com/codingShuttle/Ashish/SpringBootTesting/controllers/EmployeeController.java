@@ -3,7 +3,9 @@ package com.codingShuttle.Ashish.SpringBootTesting.controllers;
 
 import com.codingShuttle.Ashish.SpringBootTesting.dto.EmployeeDto;
 import com.codingShuttle.Ashish.SpringBootTesting.services.EmployeeService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

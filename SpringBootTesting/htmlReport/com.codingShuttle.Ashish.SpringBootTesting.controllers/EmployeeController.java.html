@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmployeeController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">com.codingShuttle.Ashish.SpringBootTesting.controllers</a> &gt; <span class="el_source">EmployeeController.java</span></div><h1>EmployeeController.java</h1><pre class="source lang-java linenums">package com.codingShuttle.Ashish.SpringBootTesting.controllers;
+
+
+import com.codingShuttle.Ashish.SpringBootTesting.dto.EmployeeDto;
+import com.codingShuttle.Ashish.SpringBootTesting.services.EmployeeService;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/employees&quot;)
+@RequiredArgsConstructor
+public class EmployeeController {
+
+    private final EmployeeService employeeService;
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;EmployeeDto&gt; getEmployeeById(@PathVariable Long id) {
+<span class="nc" id="L22">        EmployeeDto employeeDto = employeeService.getEmployeeById(id);</span>
+<span class="nc" id="L23">        return ResponseEntity.ok(employeeDto);</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;EmployeeDto&gt; createNewEmployee(@RequestBody EmployeeDto employeeDto) {
+<span class="nc" id="L28">        EmployeeDto createdEmployeeDto = employeeService.createNewEmployee(employeeDto);</span>
+<span class="nc" id="L29">        return new ResponseEntity&lt;&gt;(createdEmployeeDto, HttpStatus.CREATED);</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;EmployeeDto&gt; updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
+<span class="nc" id="L34">        EmployeeDto updatedEmployee = employeeService.updateEmployee(id, employeeDto);</span>
+<span class="nc" id="L35">        return ResponseEntity.ok(updatedEmployee);</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteEmployee(@PathVariable Long id) {
+<span class="nc" id="L40">        employeeService.deleteEmployee(id);</span>
+<span class="nc" id="L41">        return ResponseEntity.noContent().build();</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

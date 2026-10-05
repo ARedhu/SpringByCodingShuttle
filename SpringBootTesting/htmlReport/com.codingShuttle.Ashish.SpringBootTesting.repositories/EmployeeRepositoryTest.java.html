@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmployeeRepositoryTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">com.codingShuttle.Ashish.SpringBootTesting.repositories</a> &gt; <span class="el_source">EmployeeRepositoryTest.java</span></div><h1>EmployeeRepositoryTest.java</h1><pre class="source lang-java linenums">package com.codingShuttle.Ashish.SpringBootTesting.repositories;
+
+import com.codingShuttle.Ashish.SpringBootTesting.TestContainerConfiguration;
+import com.codingShuttle.Ashish.SpringBootTesting.entities.Employee;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/*
+Arrange → Prepare test data
+Act     → Execute the method
+Assert  → Verify the result
+ */
+
+@Import(TestContainerConfiguration.class)
+//@SpringBootTest // Avoid this for repository tests; it loads the entire application context and is slower. It is mainly used for integration testing.
+@DataJpaTest // We use this for Persistance layer testing. It will automatically configure the database other than our production database if available. Like here we have h2-database. Also it runs each test case within a transaction, which is rolled back after test completion. This ensures tests do not affect each other and provides a clean state for each other.
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // We use it so that after using TestContainer docker image as our testing database, we don't want h2-database to initialize. Or we can skip using it and remove h2-database from dependencies.
+<span class="fc" id="L27">class EmployeeRepositoryTest {</span>
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    private Employee employee;
+
+    @BeforeEach
+    void setUp(){
+<span class="fc" id="L36">        employee = Employee.builder()</span>
+<span class="fc" id="L37">                .name(&quot;Ashish&quot;)</span>
+<span class="fc" id="L38">                .email(&quot;Ashish@gmail.com&quot;)</span>
+<span class="fc" id="L39">                .salary(100L)</span>
+<span class="fc" id="L40">                .build();</span>
+<span class="fc" id="L41">    }</span>
+
+    // Note: The first method that executes inside a file will cache the application context. So, it makes more time to execute. Other methods can simply use that cached context and run very fast.
+    @Test
+    void testFindByEmail_whenEmailIsPresent_thenReturnEmployee() { // Happy test case : Positive test case.
+        //        Arrange: prepared the data.
+<span class="fc" id="L47">        employeeRepository.save(employee); // save this data inside of test database.</span>
+
+        //        Act: run the method.
+<span class="fc" id="L50">        List&lt;Employee&gt; employeeList = employeeRepository.findByEmail(employee.getEmail());</span>
+
+        //        Assert: verify the results.
+<span class="fc" id="L53">        Assertions.assertThat(employeeList).isNotNull();</span>
+<span class="fc" id="L54">        Assertions.assertThat(employeeList).isNotEmpty();</span>
+<span class="fc" id="L55">        Assertions.assertThat(employeeList.get(0).getEmail()).isEqualTo(employee.getEmail());</span>
+<span class="fc" id="L56">    }</span>
+
+    @Test
+    void testFindByEmail_WhenEmailIsNotFound_thenReturnEmptyEmployeeList(){ // Negative test case.
+        // Assign
+<span class="fc" id="L61">        String email = &quot;hello@gmail.com&quot;;</span>
+
+        // Act
+<span class="fc" id="L64">        List&lt;Employee&gt; employeeList = employeeRepository.findByEmail(email);</span>
+
+        // Assert
+<span class="fc" id="L67">        Assertions.assertThat(employeeList).isNotNull();</span>
+<span class="fc" id="L68">        Assertions.assertThat(employeeList).isEmpty();</span>
+
+<span class="fc" id="L70">    }</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

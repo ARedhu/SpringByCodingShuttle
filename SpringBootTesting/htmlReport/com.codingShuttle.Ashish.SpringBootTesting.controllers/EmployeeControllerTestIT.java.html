@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmployeeControllerTestIT.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">com.codingShuttle.Ashish.SpringBootTesting.controllers</a> &gt; <span class="el_source">EmployeeControllerTestIT.java</span></div><h1>EmployeeControllerTestIT.java</h1><pre class="source lang-java linenums">package com.codingShuttle.Ashish.SpringBootTesting.controllers;
+
+import com.codingShuttle.Ashish.SpringBootTesting.dto.EmployeeDto;
+import com.codingShuttle.Ashish.SpringBootTesting.entities.Employee;
+import com.codingShuttle.Ashish.SpringBootTesting.repositories.EmployeeRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+<span class="nc" id="L12">class EmployeeControllerTestIT extends AbstractIntegrationTest{</span>
+
+    @Autowired
+    private EmployeeRepository employeeRepository; // Remember we will use all the things real like service, repository. Just the database will be dummy/test database.
+
+    Employee testEmployee;
+    EmployeeDto testEmployeeDto;
+
+    @BeforeEach
+    void setUp() {
+<span class="nc" id="L22">        testEmployee = Employee.builder()</span>
+<span class="nc" id="L23">                .email(&quot;Ashish@gmail.com&quot;)</span>
+<span class="nc" id="L24">                .name(&quot;Ashish&quot;)</span>
+<span class="nc" id="L25">                .salary(200L)</span>
+<span class="nc" id="L26">                .build();</span>
+<span class="nc" id="L27">        testEmployeeDto = EmployeeDto.builder()</span>
+<span class="nc" id="L28">                .email(&quot;Ashish@gmail.com&quot;)</span>
+<span class="nc" id="L29">                .name(&quot;Ashish&quot;)</span>
+<span class="nc" id="L30">                .salary(200L)</span>
+<span class="nc" id="L31">                .build();</span>
+<span class="nc" id="L32">        employeeRepository.deleteAll();</span>
+<span class="nc" id="L33">    }</span>
+
+    @Test
+    void testGetEmployeeById_success(){
+<span class="nc" id="L37">        Employee savedEmployee = employeeRepository.save(testEmployee);</span>
+<span class="nc" id="L38">        webTestClient.get() // Saying that you have to make a get request</span>
+<span class="nc" id="L39">                .uri(&quot;/employees/{id}&quot;, savedEmployee.getId()) // the request.</span>
+<span class="nc" id="L40">                .exchange() // make the request and take the response. Before it the request lines are there and after it the response lines are there.</span>
+<span class="nc" id="L41">                .expectStatus().isOk()</span>
+<span class="nc" id="L42">                .expectBody(EmployeeDto.class) // Converting the incoming response from server to EmployeeDto type. Means we are deserealizing the data. Jackson is working here to convert raw JSON data to our object type of employeedto.</span>
+               // .isEqualTo(testEmployeeDto)  // Way-1 of comparison: Here we are directly comparing it with testEmployeeDto. Use it when our .equals and .hashcode methods inside of EmployeeDto class are properly written according to our needs
+<span class="nc" id="L44">                .value(employeeDto -&gt; { // way-2:</span>
+<span class="nc" id="L45">                    assertThat(employeeDto.getEmail()).isEqualTo(savedEmployee.getEmail());</span>
+<span class="nc" id="L46">                    assertThat(employeeDto.getId()).isEqualTo(savedEmployee.getId());</span>
+<span class="nc" id="L47">                });</span>
+<span class="nc" id="L48">    }</span>
+
+
+    @Test
+    void testGetEmployeeById_failure(){
+<span class="nc" id="L53">        webTestClient.get()</span>
+<span class="nc" id="L54">                .uri(&quot;/employees/1&quot;)</span>
+<span class="nc" id="L55">                .exchange()</span>
+<span class="nc" id="L56">                .expectStatus().isNotFound();</span>
+<span class="nc" id="L57">    }</span>
+
+
+    @Test
+    void testCreateNewEmployee_whenEmployeeAlreadyExists_thenThrowException() {
+<span class="nc" id="L62">        Employee savedEmployee = employeeRepository.save(testEmployee);</span>
+
+<span class="nc" id="L64">        webTestClient.post()</span>
+<span class="nc" id="L65">                .uri(&quot;/employees&quot;)</span>
+<span class="nc" id="L66">                .bodyValue(testEmployeeDto)</span>
+<span class="nc" id="L67">                .exchange()</span>
+<span class="nc" id="L68">                .expectStatus().is5xxServerError();</span>
+<span class="nc" id="L69">    }</span>
+
+    @Test
+    void testCreateNewEmployee_whenEmployeeDoesNotExists_thenCreateEmployee() {
+<span class="nc" id="L73">        webTestClient.post()</span>
+<span class="nc" id="L74">                .uri(&quot;/employees&quot;)</span>
+<span class="nc" id="L75">                .bodyValue(testEmployeeDto)</span>
+<span class="nc" id="L76">                .exchange()</span>
+<span class="nc" id="L77">                .expectStatus().isCreated()</span>
+<span class="nc" id="L78">                .expectBody()</span>
+<span class="nc" id="L79">                .jsonPath(&quot;$.email&quot;).isEqualTo(testEmployeeDto.getEmail()) // way-3: directly check with the json.</span>
+<span class="nc" id="L80">                .jsonPath(&quot;$.name&quot;).isEqualTo(testEmployeeDto.getName());</span>
+<span class="nc" id="L81">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

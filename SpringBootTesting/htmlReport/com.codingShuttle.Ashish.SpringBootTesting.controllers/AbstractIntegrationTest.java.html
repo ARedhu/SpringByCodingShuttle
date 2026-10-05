@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractIntegrationTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">com.codingShuttle.Ashish.SpringBootTesting.controllers</a> &gt; <span class="el_source">AbstractIntegrationTest.java</span></div><h1>AbstractIntegrationTest.java</h1><pre class="source lang-java linenums">package com.codingShuttle.Ashish.SpringBootTesting.controllers;
+
+
+import com.codingShuttle.Ashish.SpringBootTesting.TestContainerConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+// Note: There is a possibility that we have multiple type of controllers, services, repositories. So, it is better to create a seperate class where we can put the common things and extend that class everywhere rather than writing the common things again and again in each file.
+@SpringBootTest // Used for initializing spring application context for Integration testing.
+@AutoConfigureWebTestClient(timeout = &quot;10s&quot;) // Helps in Integration testing and making API calls. Timeout means, If this WebTestClient request doesn't complete within 10 seconds, consider it a failure. Remember timeout is not the time your API is allowed to take in production. It is the timeout for the test client's operations.
+@Import(TestContainerConfiguration.class) // Helps to get the containerized database inside docker.
+<span class="nc" id="L15">public class AbstractIntegrationTest {</span>
+
+    @Autowired
+    WebTestClient webTestClient;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

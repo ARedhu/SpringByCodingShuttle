@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpringBootTestingApplicationTests.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">com.codingShuttle.Ashish.SpringBootTesting</a> &gt; <span class="el_source">SpringBootTestingApplicationTests.java</span></div><h1>SpringBootTestingApplicationTests.java</h1><pre class="source lang-java linenums">package com.codingShuttle.Ashish.SpringBootTesting;
+
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Offset;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+// @SpringBootTest
+<span class="fc" id="L12">@Slf4j</span>
+<span class="fc" id="L13">class SpringBootTestingApplicationTests {</span>
+
+
+	// We should not return anything from the test method.
+//	@Test
+//	void contextLoads() {
+//	}
+
+
+	@Test
+//	@DisplayName(&quot;DisplayNameOfTest1&quot;)
+//	@Disabled // To make the test case disable.
+	void testTwoNumbersAddition(){
+<span class="fc" id="L26">		log.info(&quot;Testing two numbers addition&quot;);</span>
+<span class="fc" id="L27">		int a = 5, b=3;</span>
+
+        // JUnit based Assertion.
+		// Assertions.assertEquals(8, addTwoNumbers(a, b));
+		// Problems: This Assertions comes from Junit and not from AssertJ liabrary. In this we have to memorize all the methods which is quite difficult. But when we will import the methods from AssertJ liabrary in that we have to provide result value inside of that which will later provide the respected methods only and we provide expected value there. Also in JUnit we can't do chaining of multiple assertions but in case of AssertJ liabrary we can do so.
+
+		// AssertJ liabrary based assertion.
+<span class="fc" id="L34">		int result = addTwoNumbers(a, b);</span>
+<span class="fc" id="L35">		Assertions.assertThat(result).isEqualTo(8)</span>
+<span class="fc" id="L36">				.isCloseTo(10, Offset.offset(2));</span>
+
+
+<span class="fc" id="L39">		log.info(&quot;Test case passed successfully&quot;);</span>
+
+<span class="fc" id="L41">	}</span>
+
+	int addTwoNumbers(int a, int b){
+<span class="fc" id="L44">		return a + b;</span>
+	}
+
+
+	@Test
+	void testDivideTwoNumbers_WhenDenominatorIsZero_ThenArithematicException(){ // We have to be as much descriptive as possible while naming the test-method name.
+<span class="fc" id="L50">		int a = 5, b=0;</span>
+
+<span class="pc" id="L52">		Assertions.assertThatThrownBy(()-&gt; divideTwoNumbers(a, b))</span>
+<span class="fc" id="L53">				.isInstanceOf(ArithmeticException.class);</span>
+
+<span class="fc" id="L55">		log.info(&quot;testDivideTwoNumbers done...&quot;);</span>
+<span class="fc" id="L56">	}</span>
+
+	int divideTwoNumbers(int a, int b){
+		try{
+<span class="nc" id="L60">			int result = a / b;</span>
+<span class="nc" id="L61">			return result;</span>
+<span class="fc" id="L62">		}catch(ArithmeticException e){</span>
+<span class="fc" id="L63">			log.error(&quot;Arithematic exception occured: &quot;+e.getLocalizedMessage());</span>
+<span class="fc" id="L64">			throw new ArithmeticException(e.getLocalizedMessage());</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

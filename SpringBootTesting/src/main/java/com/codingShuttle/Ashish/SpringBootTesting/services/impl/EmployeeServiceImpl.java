@@ -6,7 +6,9 @@ import com.codingShuttle.Ashish.SpringBootTesting.entities.Employee;
 import com.codingShuttle.Ashish.SpringBootTesting.exceptions.ResourceNotFoundException;
 import com.codingShuttle.Ashish.SpringBootTesting.repositories.EmployeeRepository;
 import com.codingShuttle.Ashish.SpringBootTesting.services.EmployeeService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;

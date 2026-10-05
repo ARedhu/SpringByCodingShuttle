@@ -1,9 +1,6 @@
 package com.codingShuttle.Ashish.SpringBootTesting.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -11,6 +8,8 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class EmployeeDto {
     private Long id;
     private String email;

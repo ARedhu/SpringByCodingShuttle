@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmployeeServiceImplTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">com.codingShuttle.Ashish.SpringBootTesting.services.impl</a> &gt; <span class="el_source">EmployeeServiceImplTest.java</span></div><h1>EmployeeServiceImplTest.java</h1><pre class="source lang-java linenums">package com.codingShuttle.Ashish.SpringBootTesting.services.impl;
+
+import com.codingShuttle.Ashish.SpringBootTesting.TestContainerConfiguration;
+import com.codingShuttle.Ashish.SpringBootTesting.dto.EmployeeDto;
+import com.codingShuttle.Ashish.SpringBootTesting.entities.Employee;
+import com.codingShuttle.Ashish.SpringBootTesting.exceptions.ResourceNotFoundException;
+import com.codingShuttle.Ashish.SpringBootTesting.repositories.EmployeeRepository;
+import com.codingShuttle.Ashish.SpringBootTesting.services.EmployeeService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+
+//@Import(TestContainerConfiguration.class) // Use this database.
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Don't use any other database available.
+@ExtendWith(MockitoExtension.class) //1.i Here we can't use @DataJpaTest as that will not scan and create beans for Service layer.
+<span class="fc" id="L34">class EmployeeServiceImplTest {</span>
+
+    @Mock // 2.i
+    private EmployeeRepository employeeRepository;
+
+    @Spy // 3.i Use it when we don't want to create a mock or not even the bean of particular thing. And, still want to use its actual version inside of tests.
+    private ModelMapper modelMapper;
+
+    @InjectMocks //1.ii Creates the service object and injects the @Mock dependencies into it.
+    private EmployeeServiceImpl employeeService; // Also as we are not creating a bean directly so we can't use EmployeeService. We have to use EmployeeServiceImpl.
+
+    private Employee employee;
+    private EmployeeDto employeeDto;
+
+    @BeforeEach
+    void setUp(){
+<span class="fc" id="L50">        Long id = 1L;</span>
+<span class="fc" id="L51">        employee = Employee.builder()</span>
+<span class="fc" id="L52">                .id(id)</span>
+<span class="fc" id="L53">                .name(&quot;Ashish&quot;)</span>
+<span class="fc" id="L54">                .email(&quot;Ashish@gmail.com&quot;)</span>
+<span class="fc" id="L55">                .salary(200L)</span>
+<span class="fc" id="L56">                .build();</span>
+
+<span class="fc" id="L58">        employeeDto = modelMapper.map(employee, EmployeeDto.class);</span>
+<span class="fc" id="L59">    }</span>
+
+    @Test
+    void testGetEmployeeById_WhenEmployeeIdIsPresent_ThenReturnEmployeeDto(){ // +ve case.
+//        Assign
+<span class="fc" id="L64">        Long id = employee.getId();</span>
+<span class="fc" id="L65">        when(employeeRepository.findById(id)).thenReturn(Optional.of(employee)); // 2.ii stubbing.</span>
+
+//        Act
+<span class="fc" id="L68">        EmployeeDto employeeDto = employeeService.getEmployeeById(id);</span>
+
+//        Assert
+<span class="fc" id="L71">        assertThat(employeeDto).isNotNull();</span>
+<span class="fc" id="L72">        assertThat(employeeDto.getId()).isEqualTo(id);</span>
+<span class="fc" id="L73">        assertThat(employeeDto.getEmail()).isEqualTo(employee.getEmail());</span>
+<span class="fc" id="L74">        verify(employeeRepository).findById(id); // 2.iii) Verify if the mocked thing methods were properly called or not.</span>
+<span class="fc" id="L75">    }</span>
+
+    @Test
+    void testGetEmployeeById_WhenEmployeeIsNotPresent_ThenThrowException(){ // -ve case.
+        // Arrange
+<span class="fc" id="L80">        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());</span>
+
+        // act and assert
+<span class="pc" id="L83">        assertThatThrownBy(()-&gt; employeeService.getEmployeeById(1L))</span>
+<span class="fc" id="L84">                .isInstanceOf(ResourceNotFoundException.class);</span>
+
+<span class="fc" id="L86">    }</span>
+
+
+    @Test
+    void testCreateNewEmmployee_WhenValidEmployee_ThenCreateNewEmployee(){ // Happy or +ve case. Means we are not dealing with failure or exceptions in this test case.
+//        Assign
+<span class="fc" id="L92">        when(employeeRepository.findByEmail(anyString())).thenReturn(List.of()); // Stubbing.</span>
+<span class="fc" id="L93">        when(employeeRepository.save(any(Employee.class))).thenReturn(employee); // stubbing.</span>
+
+//        Act
+<span class="fc" id="L96">        EmployeeDto newEmployeeDto = employeeService.createNewEmployee(employeeDto);</span>
+
+//        Assert
+
+        // 4.i) Argument captor helps us to capture the value that we passed inside the method of a mocked thing. This is useful because it may happen that our service modifies the object before saving. So, we want to verify exactly what was sent to the repository.
+<span class="fc" id="L101">        ArgumentCaptor&lt;Employee&gt; employeeArgumentCaptor = ArgumentCaptor.forClass(Employee.class);</span>
+
+<span class="fc" id="L103">        assertThat(employeeDto).isNotNull();</span>
+<span class="fc" id="L104">        assertThat(employeeDto.getEmail()).isEqualTo(newEmployeeDto.getEmail());</span>
+
+        //        verify(employeeRepository).save(any(Employee.class)); // Before capture.
+        // Ye verify method to simply verify karta h ki save method call hua tha ki nahi.
+<span class="fc" id="L108">        verify(employeeRepository).save(employeeArgumentCaptor.capture()); // This tells to Mockito that When you find the Employee that was passed to save(), capture that actual object inside captor.</span>
+
+<span class="fc" id="L110">        Employee capturedEmployee = employeeArgumentCaptor.getValue();</span>
+<span class="fc" id="L111">        assertThat(capturedEmployee.getEmail()).isEqualTo(employee.getEmail()); // Here we are verifying even more tightly that what we are passing from service layer is actually equal to what is passed to the repo for saving.</span>
+<span class="fc" id="L112">    }</span>
+
+
+    @Test
+    void testCreateNewEmployee_whenAttemptingToCreateEmployeeWithExistingEmail_thenThrowException(){
+        // Assert
+<span class="fc" id="L118">        String email = employee.getEmail();</span>
+<span class="fc" id="L119">        when(employeeRepository.findByEmail(email)).thenReturn(List.of(employee));</span>
+
+        // act and asssert
+<span class="pc" id="L122">        assertThatThrownBy(()-&gt; employeeService.createNewEmployee(employeeDto))</span>
+<span class="fc" id="L123">                .isInstanceOf(RuntimeException.class)</span>
+<span class="fc" id="L124">                .hasMessage(&quot;Employee already exists with email: &quot;+email);</span>
+
+<span class="fc" id="L126">        verify(employeeRepository).findByEmail(employeeDto.getEmail());</span>
+<span class="fc" id="L127">        verify(employeeRepository, never()).save(any());</span>
+<span class="fc" id="L128">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
