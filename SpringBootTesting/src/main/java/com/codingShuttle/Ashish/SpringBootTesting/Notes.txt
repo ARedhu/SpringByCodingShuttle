@@ -1,0 +1,17 @@
+Case-1:
+In real world scenerio it happens that we require diff variables inside of application.properties according to the diff environment we are workingn like dev, testing, staging, prod environment. For this what we do we can simply create multiple application.properties files.
+
+application.properties                       # Default file. It will load always no matter what the environment/profile is. Or even if the profile is not set.
+application-dev.properties
+application-stage.properties
+application-prod.properties
+
+We can set the environment/profile either using command line or using environment variables or using jar file.
+Command line: mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+
+Case-2:
+Now it may also happen that we want certain methods to run when a specific profile is there. Then also we can use profiles.
+
+@Profile("dev")
+method
