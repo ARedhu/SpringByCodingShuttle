@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: SpringAI
+
+  config:
+    import: "optional:file:.env[.properties]"
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.7
+
+logging:
+  level:
+    org.springframework.ai:
+      chat.client: DEBUG
