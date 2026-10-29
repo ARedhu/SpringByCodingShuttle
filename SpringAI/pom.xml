@@ -46,6 +46,18 @@
 			<artifactId>spring-ai-starter-vector-store-pgvector</artifactId>
 		</dependency>
 
+<!-- Dependency for vector-store with advisors -->
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-vector-store-advisor</artifactId>
+		</dependency>
+
+<!-- Dependency for PDF reading by spring ai -->
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-pdf-document-reader</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

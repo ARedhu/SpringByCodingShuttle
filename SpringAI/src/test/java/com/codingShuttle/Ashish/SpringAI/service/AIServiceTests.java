@@ -38,4 +38,10 @@ public class AIServiceTests {
             System.out.println(x);
         }
     }
+
+    @Test
+    public void testAskAI(){
+        var res = aiService.askAI("Who is Ashish");
+        System.out.println(res);
+    }
 }

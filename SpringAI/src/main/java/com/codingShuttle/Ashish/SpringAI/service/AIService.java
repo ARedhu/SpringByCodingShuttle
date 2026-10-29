@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +82,43 @@ public class AIService {
                         .query(text)
                         .topK(2)
                 .build());
+    }
+
+    public String askAI(String promt){
+        String template = """
+                Rules:
+                - Use only the information provided in the context
+                - If multiple context sections are relevant, combine them into a single explanation.
+                - If the answer is not present, say "I don't know"
+                
+                Context:
+                {context}
+                """;
+
+        PromptTemplate promptTemplate = new PromptTemplate(template);
+        List<Document> documents = vectorStore.similaritySearch(SearchRequest.builder()
+                        .query(promt)
+                        .topK(2)
+//                        .filterExpression(" topic=='ai or topic=='vectorstore' ")
+                        .filterExpression(" file_name=='resume.pdf' ")
+                        .build());
+
+        String context = documents.stream()
+                .map(doc -> doc.getText())
+                .collect(Collectors.joining("\n\n"));
+
+        String systemPromt = promptTemplate.render(Map.of("context", context));
+
+        return chatClient.prompt()
+                .system(systemPromt)
+                .user(promt)
+                .advisors(
+                        new SimpleLoggerAdvisor()
+                )
+                .call()
+                .content();
+
+
     }
 
 }
