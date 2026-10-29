@@ -52,6 +52,12 @@
 			<artifactId>spring-ai-vector-store-advisor</artifactId>
 		</dependency>
 
+<!-- Dependency for ChatMemory so that we can use Postgresql rather than application memory.-->
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-starter-model-chat-memory-repository-jdbc</artifactId>
+		</dependency>
+
 <!-- Dependency for PDF reading by spring ai -->
 		<dependency>
 			<groupId>org.springframework.ai</groupId>

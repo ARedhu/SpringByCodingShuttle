@@ -6,8 +6,9 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.VectorStoreChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.ChatMemoryRepository;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,6 +33,17 @@ public class AIConfig {
     public SimpleLoggerAdvisor simpleLoggerAdvisor(){
         return new SimpleLoggerAdvisor();
     }
+
+    @Bean
+    public ChatMemory chatMemory(ChatMemoryRepository chatMemoryRepository){
+        return MessageWindowChatMemory.builder()
+                .chatMemoryRepository(chatMemoryRepository)
+                .maxMessages(20)
+                .build();
+    }
+    // What does each part do?
+    //1. ChatMemoryRepository chatMemoryRepository: Spring automatically injects the repository bean. Because you've configured JDBC-backed chat memory in pom.xml, this repository stores and retrieves conversation messages from PostgreSQL.
+    //2. MessageWindowChatMemory.builder(): Creates a builder to configure your short-term memory implementation.
 
     @Bean
     public MessageChatMemoryAdvisor messageChatMemoryAdvisor(ChatMemory chatMemory){

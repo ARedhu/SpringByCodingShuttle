@@ -16,6 +16,11 @@ spring:
       pgvector:
         initialize-schema: true
 #        In production we prefer to keep this initialize-schema: false. Because there we will migrate the database by ourself using SQL commands. But here in the development we are doing it so that a new table can be create automatically to store our vector.
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
 
   datasource:
     url: jdbc:postgresql://localhost:5434/SpringAI-VectorDB

@@ -14,4 +14,10 @@ public class RAGServiceTests {
     public void testIngestPdf(){
         ragService.ingestPdf();
     }
+
+    @Test
+    public void testAskAIWithAdvisors(){
+        String res = ragService.askAIWithAdvisors("What is my name", "Ashish123");
+        System.out.println(res);
+    }
 }
