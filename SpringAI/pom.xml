@@ -40,6 +40,12 @@
 			<artifactId>spring-ai-starter-model-openai</artifactId>
 		</dependency>
 
+<!-- Dependency for pgvector store.	-->
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-starter-vector-store-pgvector</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

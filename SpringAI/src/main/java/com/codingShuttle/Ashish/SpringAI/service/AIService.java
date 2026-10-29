@@ -5,8 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -14,6 +19,8 @@ import java.util.Map;
 public class AIService {
 
     private final ChatClient chatClient;
+    private final EmbeddingModel embeddingModel;
+    private final VectorStore vectorStore;
 
     // Way-1:
 //    public String getJoke(String topic){
@@ -48,6 +55,32 @@ public class AIService {
         System.out.println(response);
 
         return response.text();
+    }
+
+    public float[] getEmbedding(String text) {
+        return embeddingModel.embed(text);
+    }
+
+    public void ingestDataToVectorStore(){
+        // Note: We have to convert the data to document and then we can store it in the vector store. Because then only it will store embedding.
+        List<Document> movies = List.of(
+                new Document("A thief who steals corporate secrets through the use of dream-sharing technology",  // This text will be converted into an embedding.
+                        Map.of("title", "Inception", "genre", "Sci-Fi", "year", "2019")), // This is the meta-data stored in the form of key-value pairs.
+                new Document("A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival",
+                        Map.of("title", "Interstellar", "genre", "Sci-Fi", "year", "2014")),
+                new Document("A poor yet passionate young man falls in love with a rich young woman",
+                        Map.of("title", "The Notebook",  "genre", "Romance", "year", "2006"))
+        );
+        vectorStore.add(movies);
+    }
+
+    public List<Document> similaritySearch(String text){
+//        return vectorStore.similaritySearch(text);
+
+        return vectorStore.similaritySearch(SearchRequest.builder()
+                        .query(text)
+                        .topK(2)
+                .build());
     }
 
 }

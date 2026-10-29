@@ -12,6 +12,16 @@ spring:
         options:
           model: gpt-4o-mini
           temperature: 0.7
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+#        In production we prefer to keep this initialize-schema: false. Because there we will migrate the database by ourself using SQL commands. But here in the development we are doing it so that a new table can be create automatically to store our vector.
+
+  datasource:
+    url: jdbc:postgresql://localhost:5434/SpringAI-VectorDB
+    username: my-user
+    password: password
+    driver-class-name: org.postgresql.Driver
 
 logging:
   level:
