@@ -28,6 +28,11 @@ spring:
     password: password
     driver-class-name: org.postgresql.Driver
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
 logging:
   level:
     org.springframework.ai:
