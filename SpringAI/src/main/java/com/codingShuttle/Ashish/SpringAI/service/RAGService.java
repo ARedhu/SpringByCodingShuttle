@@ -1,10 +1,13 @@
 package com.codingShuttle.Ashish.SpringAI.service;
 
+import com.codingShuttle.Ashish.SpringAI.advisor.CustomLoggingAdvisor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.VectorStoreChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
@@ -31,6 +34,9 @@ public class RAGService {
     private final MessageChatMemoryAdvisor messageChatMemoryAdvisor;
     private final VectorStoreChatMemoryAdvisor vectorStoreChatMemoryAdvisor;
     private final SimpleLoggerAdvisor simpleLoggerAdvisor;
+    private final QuestionAnswerAdvisor questionAnswerAdvisor;
+    private final SafeGuardAdvisor safeGuardAdvisor;
+    private final CustomLoggingAdvisor customLoggingAdvisor;
 
     // This all will happen offline, as we are storing things in our database. And, will happen once.
     public void ingestPdf(){
@@ -48,16 +54,20 @@ public class RAGService {
     public String askAIWithAdvisors(String prompt, String userId){
 
         List<Advisor> advisors = new ArrayList<>();
+        advisors.add(safeGuardAdvisor);
         advisors.add(simpleLoggerAdvisor);
         advisors.add(messageChatMemoryAdvisor);
         advisors.add(vectorStoreChatMemoryAdvisor);
+   //     advisors.add(questionAnswerAdvisor); // We can't test it in this way.
 
         // We have to provide conversationId because that helps to differentiate b/w multiple users. We can get that from spring security.
 
         return chatClient.prompt()
                 .user(prompt)
                 .advisors(spec -> spec
-                        .advisors(advisors)
+//                        .advisors(questionAnswerAdvisor) // To test questionAnswerAdvisor seperately.
+//                                .advisors(advisors)
+                                .advisors(customLoggingAdvisor) // To test logging.
                         .param(ChatMemory.CONVERSATION_ID, userId)
                 )
                 .call()

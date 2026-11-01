@@ -1,16 +1,22 @@
 package com.codingShuttle.Ashish.SpringAI.config;
 
 
+import com.codingShuttle.Ashish.SpringAI.advisor.CustomLoggingAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.VectorStoreChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.ChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 // Remember in the newer version of spring ai we have to define the advisors here only, we can't use builder later.
 // But then what if someone later wants to use only two advisors and someone else wants to use 4-advisors. So, it is better to define each advisor seperately and not to club them so that later users can combine them as per their needs.
@@ -52,6 +58,41 @@ public class AIConfig {
     }
     // Remember MessageChatMemoryAdvisor will accept the instance of only ChatMemory. It manages conversation messages using a configured storage repository.And, it is a short memory which bydefault contains last 20-messages only. We can alter it as well. ChatMemory is an abstraction, not a database or table itself. Its implementation can use in-memory storage or a persistent repository, such as JDBC-backed storage.
     // And, we configure these variables ChatMemory, VectorStore in application.yml file.
+
+
+
+
+    @Bean
+    public QuestionAnswerAdvisor questionAnswerAdvisor(VectorStore vectorStore){
+        return QuestionAnswerAdvisor.builder(vectorStore)
+                .searchRequest(SearchRequest.builder()
+                        .filterExpression("file_name == 'resume.pdf'")
+                        .topK(5)
+                        .build())
+                .build();
+    }
+
+
+    // SafeGuardAdvisor: It is used to prevent inappropriate or unwanted user inputs from reaching the LLM. Remember it is case sensitive.
+    @Bean
+    public SafeGuardAdvisor safeGuardAdvisor(){
+        return SafeGuardAdvisor.builder()
+                .sensitiveWords(List.of(
+                        "hack",
+                        "password",
+                        "malware",
+                        "corrupt",
+                        "Just do this",
+                        "sql",
+                        "command"
+                ))
+                .build();
+    }
+
+    @Bean
+    public CustomLoggingAdvisor customLoggingAdvisor(){
+        return new CustomLoggingAdvisor();
+    }
 }
 
 // ChatClient: It helps us to communicate with an AI model.

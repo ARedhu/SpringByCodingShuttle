@@ -17,7 +17,7 @@ public class RAGServiceTests {
 
     @Test
     public void testAskAIWithAdvisors(){
-        String res = ragService.askAIWithAdvisors("What is my name", "Ashish123");
-        System.out.println(res);
+        String res = ragService.askAIWithAdvisors("What is Spring AI", "Ashish123");
+        System.out.println("Final response: " + res);
     }
 }

@@ -118,7 +118,6 @@ public class AIService {
                 .call()
                 .content();
 
-
     }
 
 }
