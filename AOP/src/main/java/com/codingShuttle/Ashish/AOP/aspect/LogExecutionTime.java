@@ -30,3 +30,19 @@ public void after() {
 }
 
  */
+
+// @AfterReturning
+// @AfterThrowing
+
+/*
+
+@AfterThrowing("pointcut here")
+public void methodName(JoinPoint joinPoint){
+
+}
+joinPoint gives us information about the method at which the AOP advice is currently executing.
+We can get multiple info from joinPoint about the the method like: joinPoint.getSignature().getName(), joinPoint.getArgs(),
+ */
+
+
+
