@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface SalaryAccountRepository extends CrudRepository<SalaryAccount, Long> {
 
     @Override
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<SalaryAccount> findById(Long id);
 }
 
@@ -28,3 +28,4 @@ public interface SalaryAccountRepository extends CrudRepository<SalaryAccount, L
  */
 
 // If we are using Pessimistic locking, then we don't need to use version with it. But in our code we are using version for extra safety so that what if someone else try to update it.
+// Pesimistic write solves lost update problem with 100% guarante. The optimistic lock where we use version can prevent but can't guarantee 100%.

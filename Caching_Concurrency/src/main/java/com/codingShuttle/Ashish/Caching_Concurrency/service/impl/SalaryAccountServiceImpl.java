@@ -6,6 +6,7 @@ import com.codingShuttle.Ashish.Caching_Concurrency.repository.SalaryAccountRepo
 import com.codingShuttle.Ashish.Caching_Concurrency.service.SalaryAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,8 @@ public class SalaryAccountServiceImpl implements SalaryAccountService {
     }
 
     @Override
-    @Transactional
+  //  @Transactional(isolation = Isolation.SERIALIZABLE) // Even this not guarantee to resolve the lost update problem(if 100 requests comes concurrently to update the balance, how we will handle it).
+    // It can handled only via pesimistic locking in the repository.
     public SalaryAccount incrementBalance(Long accountId) {
 
         SalaryAccount salaryAccount = salaryAccountRepository.findById(accountId)
