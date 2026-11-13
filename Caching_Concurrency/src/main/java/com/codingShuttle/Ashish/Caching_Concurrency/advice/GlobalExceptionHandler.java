@@ -25,4 +25,12 @@ public class GlobalExceptionHandler {
         log.error(ex.getLocalizedMessage());
         return new ResponseEntity<>("Stale data\n", HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
+    }
 }

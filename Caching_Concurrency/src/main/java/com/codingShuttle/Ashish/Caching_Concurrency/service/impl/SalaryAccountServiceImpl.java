@@ -24,7 +24,7 @@ public class SalaryAccountServiceImpl implements SalaryAccountService {
 //        if(employee.getName().equals("Ashish")) throw new RuntimeException("Ashish is not allowed");
 
         SalaryAccount salaryAccount = SalaryAccount.builder()
-//                .employee(employee)
+                .employee(employee)
                 .balance(BigDecimal.ZERO)
                 .build();
 

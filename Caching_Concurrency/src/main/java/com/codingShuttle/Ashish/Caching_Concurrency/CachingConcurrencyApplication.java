@@ -8,6 +8,7 @@ public class CachingConcurrencyApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CachingConcurrencyApplication.class, args);
+		System.out.println("Application running successfully...");
 	}
 
 }

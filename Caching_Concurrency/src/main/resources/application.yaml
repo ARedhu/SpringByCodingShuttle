@@ -1,3 +1,36 @@
 spring:
   application:
     name: Caching_Concurrency
+
+
+# To access .env file content.
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Caching_ConcurrencyDB
+    username: postgres
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  cache:
+    type: redis
+
+# This was for localhost.
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#      password: ashish
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
+

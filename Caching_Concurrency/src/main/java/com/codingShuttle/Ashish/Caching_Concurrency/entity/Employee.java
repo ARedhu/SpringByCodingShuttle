@@ -25,4 +25,11 @@ public class Employee {
 
     @ManyToOne
     private Department department;
+
+    @OneToOne(
+            mappedBy = "employee",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private SalaryAccount salaryAccount;
 }
